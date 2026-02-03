@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecisionRank Web App</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #020617);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #0f172a;
+            border-radius: 18px;
+            box-shadow: 0 25px 70px rgba(2, 6, 23, 0.6);
+            max-width: 760px;
+            width: 95%;
+            padding: 42px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        h1 {
+            color: #e2e8f0;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.4em;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            letter-spacing: 0.8px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.7);
+            color: #e2e8f0;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+        }
+
+        .info-text {
+            font-size: 0.85em;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #22d3ee, #38bdf8);
+            color: #020617;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(56, 189, 248, 0.4);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(
+                135deg,
+                rgba(30, 41, 59, 0.85),
+                rgba(15, 23, 42, 0.85)
+            );
+            border-radius: 12px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+            accent-color: #38bdf8;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .email-section {
+            display: none;
+        }
+
+        .email-section.active {
+            display: block;
+        }
+
+        .example {
+            margin-top: 30px;
+            padding: 18px;
+            background: rgba(15, 23, 42, 0.75);
+            border-radius: 14px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .example-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .example-content {
+            font-family: monospace;
+            color: #c7d2fe;
+            line-height: 1.7;
+        }
+
+        .sample-download {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 18px;
+            background: rgba(56, 189, 248, 0.2);
+            color: #e0f2fe;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .sample-download:hover {
+            background: rgba(56, 189, 248, 0.35);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border: 2px solid rgba(56, 189, 248, 0.6);
+            }
+
+            input,
+            .submit-btn {
+                border: 2px solid rgba(56, 189, 248, 0.6);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>DecisionRank Web App</h1>
+    <p class="subtitle">Smart multi-criteria scoring in seconds</p>
+
+    <form id="topsisForm">
+
+        <div class="form-group">
+            <label for="csvFile">Upload CSV File *</label>
+            <input type="file" id="csvFile" accept=".csv" required>
+            <p class="info-text">First column: option names, remaining columns: numeric criteria values</p>
+        </div>
+
+        <div class="form-group">
+            <label for="weights">Weights *</label>
+            <input type="text" id="weights" placeholder="e.g., 1,1,1,2" required>
+        </div>
+
+        <div class="form-group">
+            <label for="impacts">Impacts *</label>
+            <input type="text" id="impacts" placeholder="e.g., +,+,-,+" required>
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="sendEmail">
+            <label for="sendEmail">Send results to email</label>
+        </div>
+
+        <div class="form-group email-section" id="emailSection">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="your.email@example.com">
+        </div>
+
+        <button type="submit" class="submit-btn">Run Analysis</button>
+    </form>
+
+    <div class="example">
+        <div class="example-title">Example CSV Format</div>
+        <div class="example-content">
+            Option,Cost,Performance,Durability,EnergyUse<br>
+            A1,120,85,7,40<br>
+            A2,100,78,8,35<br>
+            A3,140,90,9,50
+        </div>
+        <a href="website/sample_data.csv" class="sample-download" download>📥 Download Sample CSV</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script src="website/topsis.js"></script>
+<script src="website/main.js"></script>
+
+</body>
+</html>
